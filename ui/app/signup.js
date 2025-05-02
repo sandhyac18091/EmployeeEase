@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import {  useRouter } from 'expo-router'; 
+import { useRouter } from 'expo-router';
 
 const Signup = () => {
-    const router=useRouter()
+  const router = useRouter();
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -21,7 +21,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch('http:localhost:9000/signup', {
+      const response = await fetch('http://localhost:9000/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -30,13 +30,13 @@ const Signup = () => {
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert('Success', 'Login successful');
-        router.push('/login'); 
+        Alert.alert('Success', 'Signup successful');
+        router.push('/');
       } else {
-        Alert.alert('Error', data.message || 'Invalid credentials');
+        Alert.alert('Error', data.message || 'Signup failed');
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Signup error:', error);
       Alert.alert('Error', 'Could not connect to server');
     }
   };
@@ -72,6 +72,15 @@ const Signup = () => {
       <TouchableOpacity style={styles.button} onPress={handleSignup}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
+
+      <View style={styles.loginContainer}>
+        <Text style={styles.loginText}>
+          Already have an account?{' '}
+          <Text style={styles.loginLink} onPress={() => router.push('/login')}>
+            Login
+          </Text>
+        </Text>
+      </View>
     </View>
   );
 };
@@ -104,11 +113,23 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
-    marginTop: 10
+    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  loginContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  loginText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  loginLink: {
+    color: '#4CAF50',
+    fontWeight: 'bold',
   },
 });

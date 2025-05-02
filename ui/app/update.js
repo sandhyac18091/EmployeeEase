@@ -22,7 +22,7 @@ const UpdateEmployee = () => {
 
   const fetchEmployee = async () => {
     try {
-      const response = await fetch(`http://localhost:9000/addemployee/${id}`);
+      const response = await fetch(`http:/localhost:9000/addemployee/${id}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -43,7 +43,7 @@ const UpdateEmployee = () => {
       fullname: employee.fullname,
       designation: employee.designation,
       joiningdate: employee.joiningdate,
-      salary: employee.salary,
+      salary: Number(employee.salary),
     };
 
     try {
@@ -59,7 +59,7 @@ const UpdateEmployee = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      navigation.goBack(); 
+      navigation.navigate('viewemployee', { id });
     } catch (error) {
       console.error('Error updating employee:', error);
     }

@@ -1,240 +1,127 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import Entypo from '@expo/vector-icons/Entypo';
-import { ScrollView } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import Octicons from '@expo/vector-icons/Octicons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 
+const Index = () => {
+  const router = useRouter();
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+  });
 
-export default function Index() {
-  const router=useRouter()
+  const handleChange = (field, value) => {
+    setForm({ ...form, [field]: value });
+  };
+
+  const handleLogin = async () => {
+    if (!form.email || !form.password) {
+      Alert.alert('Error', 'Please enter email and password');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:9000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Success', 'Login successful');
+        router.push('/home'); 
+      } else {
+        Alert.alert('Error', data.message || 'Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      Alert.alert('Error', 'Could not connect to server');
+    }
+  };
+
   return (
-    <ScrollView>
-      <LinearGradient colors={['#BE93C5', '#E9E4F8']} style={{ flex: 1 }}>
-        <View style={{ padding: 12 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between"
-            }}>
-            <AntDesign name="barschart" size={24} color="black" />
-            <Text style={{ fontSize: 16, fontWeight: "600" }}>Employee Management System</Text>
-            <Entypo name="lock" size={24} color="black" />
-          </View>
-        </View>
+    <View style={styles.container}>
+      <Text style={styles.title}>Login</Text>
 
-        <View
-      style={{
-        marginTop: 20,
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 20,
-      }}
-    >
-      
-      <Pressable onPress={() => router.push('/employee')}
-        style={{
-          backgroundColor: '#D3CCE3',
-          padding: 12,
-          borderRadius: 6,
-          alignItems: 'center',
-          justifyContent: 'center',
-          flex: 1,
-        }}
-      >
-        <View
-          style={{
-            width: 58,
-            height: 58,
-            borderRadius: 25,
-            backgroundColor: 'white',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Ionicons name="people-sharp" size={24} color="black" />
-        </View>
-        <Text style={{ marginTop: 7, fontWeight: "600" }}>Employee List</Text>
-      </Pressable>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={form.email}
+        keyboardType="email-address"
+        autoCapitalize="none"
+        onChangeText={(text) => handleChange('email', text)}
+      />
 
-      <Pressable onPress={() => router.push('/app/markattendance')}
-        style={{
-          backgroundColor: '#D3CCE3',
-          padding: 12,
-          borderRadius: 6,
-          alignItems: 'center',
-          justifyContent: 'center',
-          flex: 1,
-        }}
-      >
-        <View
-          style={{
-            width: 58,
-            height: 58,
-            borderRadius: 25,
-            backgroundColor: 'white',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Ionicons name="people-sharp" size={24} color="black" />
-        </View>
-        <Text style={{ marginTop: 7, fontWeight: "600" }}>Mark Attendance</Text>
-      </Pressable>
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={form.password}
+        secureTextEntry
+        onChangeText={(text) => handleChange('password', text)}
+      />
+
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+
+      <View style={styles.signupContainer}>
+        <Text style={styles.signupText}>
+          Don’t have an account?{' '}
+          <Text style={styles.signupLink} onPress={() => router.push('/signup')}>
+            Sign up
+          </Text>
+        </Text>
+      </View>
     </View>
-
-        <View style={{ marginTop: 20, backgroundColor: 'white', paddingHorizontal: 10, paddingVertical: 10, borderRadius: 7 }}>
-          <Pressable style={{ backgroundColor: '#BE93C5', borderRadius: 6, padding: 10, flexDirection: 'row', alignItems: 'center' }} onPress={() => router.push('/viewemployee')}>
-            <View
-              style={{
-                padding: 7,
-                width: 45,
-                height: 45,
-                borderRadius: 7,
-                backgroundColor: 'white',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-              <Ionicons name="newspaper-outline" size={24} color="black" />
-            </View>
-            <Text style={{ margin: 10, fontSize: 16, fontWeight: '600', flex: 1 }}>View Employee</Text>
-            <View
-              style={{
-                width: 35,
-                height: 35,
-                borderRadius: 7,
-                backgroundColor: 'white',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-              <Entypo name="chevron-right" size={24} color="black" />
-            </View>
-          </Pressable>
-
-          <Pressable style={{ backgroundColor: '#BE93C5', borderRadius: 6, padding: 10, flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
-            <View
-              style={{
-                padding: 7,
-                width: 45,
-                height: 45,
-                borderRadius: 7,
-                backgroundColor: 'white',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-              <Octicons name="repo-pull" size={24} color="black" />
-            </View>
-            <Text style={{ margin: 10, fontSize: 16, fontWeight: '600', flex: 1 }}>Summery Report</Text>
-            <View
-              style={{
-                width: 35,
-                height: 35,
-                borderRadius: 7,
-                backgroundColor: 'white',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-              <Entypo name="chevron-right" size={24} color="black" />
-            </View>
-          </Pressable>
-
-          <Pressable style={{ backgroundColor: '#BE93C5', borderRadius: 6, padding: 10, flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
-            <View
-              style={{
-                padding: 7,
-                width: 45,
-                height: 45,
-                borderRadius: 7,
-                backgroundColor: 'white',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-              <Octicons name="report" size={24} color="black" />
-            </View>
-            <Text style={{ margin: 10, fontSize: 16, fontWeight: '600', flex: 1 }}>All Generate Report</Text>
-            <View
-              style={{
-                width: 35,
-                height: 35,
-                borderRadius: 7,
-                backgroundColor: 'white',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-              <Entypo name="chevron-right" size={24} color="black" />
-            </View>
-          </Pressable>
-
-          <Pressable style={{ backgroundColor: '#BE93C5', borderRadius: 6, padding: 10, flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
-            <View
-              style={{
-                padding: 7,
-                width: 45,
-                height: 45,
-                borderRadius: 7,
-                backgroundColor: 'white',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-              <Ionicons name="people" size={24} color="black" />
-            </View>
-            <Text style={{ margin: 10, fontSize: 16, fontWeight: '600', flex: 1 }}>Overtime Employee</Text>
-            <View
-              style={{
-                width: 35,
-                height: 35,
-                borderRadius: 7,
-                backgroundColor: 'white',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-              <Entypo name="chevron-right" size={24} color="black" />
-            </View>
-          </Pressable>
-
-        </View>
-
-        <View style={{ marginTop: 20, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <View style={{ backgroundColor: '#f79D00', borderRadius: 6, padding: 12, alignItems: 'center', justifyContent: 'center', flex: 1, height: 120 }}>
-            <View style={{ width: 35, borderRadius: 7, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
-              <MaterialCommunityIcons name="guy-fawkes-mask" size={24} color="black" />
-            </View>
-            <Text style={{ marginTop: 7 }}>Attendance Criteria</Text>
-          </View>
-
-          <View style={{ backgroundColor: '#ABCABA', borderRadius: 6, padding: 12, alignItems: 'center', justifyContent: 'center', flex: 1, height: 120 }}>
-            <View style={{ width: 35, borderRadius: 7, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
-              <AntDesign name="barchart" size={24} color="black" />
-            </View>
-            <Text style={{ marginTop: 7 }}>Increase Workflow</Text>
-          </View>
-        </View>
-
-        <View style={{ marginTop: 20, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <View style={{ backgroundColor: '#D3CCE3', borderRadius: 6, padding: 12, alignItems: 'center', justifyContent: 'center', flex: 1, height: 120 }}>
-            <View style={{ width: 35, borderRadius: 7, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
-              <MaterialCommunityIcons name="guy-fawkes-mask" size={24} color="black" />
-            </View>
-            <Text style={{ marginTop: 7 }}>Cost Savings</Text>
-          </View>
-
-          <View style={{ backgroundColor: '#bdc3c7', borderRadius: 6, padding: 12, alignItems: 'center', justifyContent: 'center', flex: 1, height: 120 }}>
-            <View style={{ width: 35, borderRadius: 7, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
-              <AntDesign name="barchart" size={24} color="black" />
-            </View>
-            <Text style={{ marginTop: 7 }}>Employee Performance</Text>
-          </View>
-        </View>
-
-
-      </LinearGradient>
-    </ScrollView>
   );
-}
+};
 
-const styles = StyleSheet.create({});
+export default Index;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 30,
+    justifyContent: 'center',
+    backgroundColor: '#f2f2f2',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    textAlign: 'center',
+    color: '#333',
+  },
+  input: {
+    backgroundColor: '#fff',
+    padding: 15,
+    marginBottom: 15,
+    borderRadius: 8,
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: '#4CAF50',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  signupContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  signupText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  signupLink: {
+    color: '#4CAF50',
+    fontWeight: 'bold',
+  },
+});

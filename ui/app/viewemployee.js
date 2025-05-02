@@ -53,13 +53,13 @@ const ViewEmployee = () => {
           text: 'Delete',
           onPress: async () => {
             try {
-              const response = await fetch(`http://<your-ip>:9000/addemployee/${id}`, {
+              const response = await fetch(`http://localhost:9000/addemployee/${id}`, {
                 method: 'DELETE',
               });
+  
               if (response.ok) {
                 console.log(`Deleted employee with ID: ${id}`);
-                // remove from local state
-                setEmployees(prev => prev.filter(emp => emp._id !== id));
+                setEmployees((prev) => prev.filter((emp) => emp._id !== id)); 
               } else {
                 console.error('Failed to delete employee');
               }
